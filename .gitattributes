@@ -1,0 +1,3 @@
+public/js/quill-custom.js linguist-vendored
+app/vendor/* linguist-vendored
+public/js-dev/* linguist-vendored
