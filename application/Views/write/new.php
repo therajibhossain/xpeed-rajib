@@ -26,7 +26,15 @@
                         <input type="text" class='form-control bg-white' placeholder="Reciept ID" id='receipt_id' required maxlength="20"><br>
 
                         <label for="items">Items <span>(required, max 255 characters)</span></label>
-                        <input type="text" class='form-control bg-white' placeholder="Items" id='items' required maxlength="255"><br>
+                        <!-- <input type="text" class='form-control bg-white' placeholder="Items" id='items' required maxlength="255"><br> -->
+
+                        <table class="table table-bordered" id="dynamicField">  
+                            <tr>  
+                                <td><input type="text" name="items[]" id='items' placeholder="Item" class="form-control name_list" required="" maxlength="255"/></td>  
+                                <td><button type="button" name="add" id="add" class="btn btn-success">Add More</button></td>  
+                            </tr>  
+                        </table>
+
 
                         <label for="buyer_email">Buyer Email <span>(required, max 20 characters)</span></label>
                         <input type="email" class='form-control bg-white' placeholder="Buyer Email" id='buyer_email' required maxlength="50"><br>

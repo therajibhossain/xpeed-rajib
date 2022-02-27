@@ -4,6 +4,9 @@ $(document).ready(function () {
     const ui = {
         csrf_token: $('#ajax_csrf').val(),
         postBtn: $('#submit-post'),
+        dynamicField: $('#dynamicField'),
+        addItem: $('#add'),
+
         amount: $('#amount'),
         buyer: $('#buyer'),
         receipt_id: $('#receipt_id'),
@@ -28,11 +31,14 @@ $(document).ready(function () {
         displayError.html('');
         displayError.fadeOut();
 
+        let items = $(":input[name^='items[']").serializeArray();
+        items = JSON.stringify(items);
+
         var formData = {
             amount: ui.amount.val(),
             buyer: ui.buyer.val(),
             receipt_id: ui.receipt_id.val(),
-            items: ui.items.val(),
+            items: items,
             buyer_email: ui.buyer_email.val(),
             note: ui.note.val(),
             city: ui.city.val(),
@@ -82,4 +88,18 @@ $(document).ready(function () {
         return hasError;
     }
 
+    var i = 0;
+    ui.addItem.click(function(){  
+        i++;  
+        ui.dynamicField.append(`<tr id="row${i}" class="dynamic-added">
+            <td><input type="text" name="items[]" placeholder="Item" class="form-control name_list" required /></td>
+            <td><button type="button" name="remove" id="${i}" class="btn btn-danger btn_remove">X</button></td>
+        </tr>`);
+        
+        $(document).on('click', '.btn_remove', function(){  
+            var button_id = $(this).attr("id");   
+            $('#row' + button_id +'').remove();  
+       });
+   });
+ 
 });
