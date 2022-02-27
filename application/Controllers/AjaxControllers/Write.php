@@ -47,11 +47,17 @@ class Write extends ProtectedController {
      * @postParams
      */
     public function submitForm() {
+        /* Prevent duplicate submissions */
+        if (isset($_COOKIE['FormSubmitted'])) {
+            $data['message'] = 'You may only submit this form once within 24 Hrs!';
+            echo json_encode($data); exit;
+        }
+
         try {            
             $post = $_POST;
             $hasErors = $this->validateData($post);
             if($hasErors) {
-                echo json_encode($hasErors); return;
+                echo json_encode($hasErors); exit;
             }
 
             extract($post);            
@@ -74,11 +80,6 @@ class Write extends ProtectedController {
             ];
 
             $data = [];
-            
-            // if($this->baseModel->isRateLimited("submitted_forms", $this->maxUserArticlesPerHour, 60) 
-            //    || $this->baseModel->exceedsMaxRowCount("articles", $this->maxUserArticles)) {
-            //     $data['limit_err'] = "You are being rate limited";
-            // }
 
             if(Str::emptyStrings($data)) {
                 // Upload Article
@@ -86,14 +87,17 @@ class Write extends ProtectedController {
                 if($formId) {
                     $data['status'] = 200;
                     $data['form_id'] = $formId;
+
+                    /* Set a cookie to prevent duplicate submissions for 24 hours */
+                    setcookie('FormSubmitted', '1', time() + 86400 * 1);
+                    echo json_encode($data); exit;
                 }
             }
         }catch(\Exception $e) {
             $data['status'] = 500;
             $data['message'] = $e->getMessage();
-        }
-
-        echo json_encode($data);
+            echo json_encode($data);
+        }        
     }
 
     private function validateData($inputData) {
@@ -105,6 +109,7 @@ class Write extends ProtectedController {
         $receipt_id = filter_var($receipt_id, FILTER_SANITIZE_STRING);
         $items = filter_var($items, FILTER_SANITIZE_STRING);
         $buyer_email = filter_var($buyer_email, FILTER_SANITIZE_EMAIL);
+        $note = filter_var($note, FILTER_SANITIZE_STRING);
         $city = filter_var($city, FILTER_SANITIZE_STRING);
         $phone = filter_var($phone, FILTER_SANITIZE_NUMBER_INT);
 
@@ -112,9 +117,10 @@ class Write extends ProtectedController {
         $errors = [];
 
         (!$amount) ? $errors['amount'] = 'Amount must be Number' : '';
-        (strlen($buyer) > 255) ? $errors['amount'] = 'Buyer exceeds 255 characters' : '';
+        (strlen($buyer) > 20) ? $errors['buyer'] = 'Buyer exceeds 20 characters' : '';
         (strlen($receipt_id) > 20) ? $errors['receipt_id'] = 'Receipt ID exceeds 20 characters' : '';
         (!filter_var($buyer_email, FILTER_VALIDATE_EMAIL)) ? $errors['buyer_email'] = 'Please enter a valid email!' : '';
+        (strlen($note) > 30) ? $errors['note'] = 'Note exceeds 30 characters' : '';
         (strlen($city) > 20) ? $errors['city'] = 'City exceeds 20 characters' : '';
         (!$phone) ? $errors['phone'] = 'Phone must be Number' : '';
 

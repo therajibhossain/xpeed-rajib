@@ -14,7 +14,16 @@ $(document).ready(function () {
         phone: $('#phone'),
     };
 
-    ui.postBtn.click(function (event) {
+    $('#submit-form').validate();
+
+    ui.phone.change(function() {
+        let phone = ui.phone.val();
+        if(phone.slice(0, 2) != '88') {
+            ui.phone.val('88' + phone);
+        }
+    });
+
+    ui.postBtn.click(function (event) {        
         const displayError = $('.display-error');
         displayError.html('');
         displayError.fadeOut();
@@ -30,6 +39,11 @@ $(document).ready(function () {
             phone: ui.phone.val(),
             csrf_token: $('#ajax_csrf').val(),
         };
+
+       let hasError = validateBeforeSubmit();
+       if(hasError) {
+           return false;
+       }
 
         $.ajax({
             type: "POST",
@@ -53,38 +67,19 @@ $(document).ready(function () {
                     <button type="button" class="close" data-dismiss="alert">&times;</button>
                 </div>`
               );
-        });;
+        });
     });
-  });
-// return;
-// const postBtn = document.querySelector("#submit-post2");
-// postBtn.addEventListener("click", () => {
-//     const data = newTokenData({
-//         'title': document.querySelector('#title').value,
-//         'tagline': document.querySelector('#tagline').value,
-//         'content': document.querySelector('.ql-editor').innerHTML,
-//         'tags': document.querySelector('#tags').value,
 
-//     });
+    function validateBeforeSubmit() {
+        var hasError = '';
+        $("#submit-form :input").each(function (i, field) {
+            var input = $(this); 
+            if(input.hasClass('error')) {
+                hasError = true;
+            }
+        });
 
-//     fetch(`${URL}/ajax/write/submit-form`, {
-//         method: "POST",
-//         body: data
-//     })
-//     .then(response => response.text())
-//     .then(result => {
-//         if(isJson(result)) {
-//             let toast = document.getElementById('draft-err-toast');
-//             let bsAlert = new bootstrap.Toast(toast, { delay: 6000 });
-//             let obj = JSON.parse(result);
+        return hasError;
+    }
 
-//             if(obj.status === 200) {
-//                 location.replace(`${URL}/form?a=${obj.article_id}`);
-//             } else {
-//                 delete obj.status;
-//                 toast.querySelector('.toast-body').innerHTML = `${obj[Object.keys(obj)[0]]}`;
-//                 bsAlert.show();
-//             }
-//         }
-//     })
-// });
+});

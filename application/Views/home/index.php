@@ -10,7 +10,7 @@
                         <div class="col-2 col-sm-3">
                             <span class="user-img d-inline-block me-3" style='background-image: url(<?=PROFILE_IMG_DIR?>/<?=$_SESSION['profile_img']?>);'></span> 
                         </div>
-                        <a class="col text-dark text-decoration-none" href="<?=URLROOT?>/profile">
+                        <a class="col text-dark text-decoration-none" href="<?=URLROOT?>/settings/edit-profile">
                             <b class='d-block'><?=ht($_SESSION['display_name'])?></b>
                             <small class="text-muted">@<?=ht($_SESSION['username'])?></small>
                         </a>
