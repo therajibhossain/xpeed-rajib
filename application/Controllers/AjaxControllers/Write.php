@@ -50,7 +50,7 @@ class Write extends ProtectedController {
         /* Prevent duplicate submissions */
         if (isset($_COOKIE['FormSubmitted'])) {
             $data['message'] = 'You may only submit this form once within 24 Hrs!';
-            echo json_encode($data); exit;
+            // echo json_encode($data); exit;
         }
 
         try {            
@@ -81,18 +81,16 @@ class Write extends ProtectedController {
 
             $data = [];
 
-            if(Str::emptyStrings($data)) {
-                // Upload Article
-                $formId = $this->writeModel->createForm($formData);                
-                if($formId) {
-                    $data['status'] = 200;
-                    $data['form_id'] = $formId;
+            $formId = $this->writeModel->createForm($formData);                
+            if($formId) {
+                $data['status'] = 200;
+                $data['form_id'] = $formId;
 
-                    /* Set a cookie to prevent duplicate submissions for 24 hours */
-                    setcookie('FormSubmitted', '1', time() + 86400 * 1);
-                    echo json_encode($data); exit;
-                }
+                /* Set a cookie to prevent duplicate submissions for 24 hours */
+                setcookie('FormSubmitted', '1', time() + 86400 * 1);
+                echo json_encode($data); exit;
             }
+            echo json_encode($data);
         }catch(\Exception $e) {
             $data['status'] = 500;
             $data['message'] = $e->getMessage();
@@ -129,35 +127,6 @@ class Write extends ProtectedController {
 
     private function generateHashKey($data, $algo = 'sha512', $salt = 'xpeed') {
         return hash($algo, $salt.$data, false);
-    }
-
-    /**
-     * Check title, tagline, content, iframes, images for errors
-     * Content is html purified before call
-     * 
-     * @param array $errors
-     * @param array $draft - Content Values
-     * 
-     * @return array $errors - List of errors
-     */
-    private function checkArticleErrors(array $errors, array $draft): array {
-        // HTML Purified before calling function
-        extract($draft);
-
-        if(Str::trimWhiteSpaces($title) === "")
-            $errors['title_err'] = "Please add title";
-        else if(mb_strlen($title) > $this->articleLimits["title"]) 
-            $errors['title_err'] = "Title must be less than {$this->articleLimits["title"]} characters";
-        
-
-        if(mb_strlen($tagline) > $this->articleLimits["tagline"]) 
-            $errors['tagline_err'] = "Tagline must be less than {$this->articleLimits["tagline"]} characters";
-        
-
-        if(mb_strlen($content) > $this->articleLimits["content"]) 
-            $errors['content_err'] = "Content length exceeds {$this->articleLimits["content"]} characters";
-
-        return $errors;
-    }
+    }   
 
 }

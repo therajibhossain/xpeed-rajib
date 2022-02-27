@@ -34,7 +34,7 @@ class Server {
         return true;
     }
 
-    public static function redirect($location): void {
+    public static function redirect($location): void { 
         header("Location: ". URLROOT."/$location");
     }
     
