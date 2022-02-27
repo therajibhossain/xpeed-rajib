@@ -1,0 +1,49 @@
+Simple PHP form submission script with 
+frontend validation 
+
+
+
+
+
+
+# Installation
+
+ ## Requirements
+  - PHP Version ≥ 7.0 (ext-mbstring and ext-exif enabled)
+  - Composer package management (optional)
+  - MySQL drivers
+ 
+ ## Setup Project 
+ 
+ Follow the given steps to setup Project.  <br>
+
+  ### 1. Setup Project
+  - unzip the project and place to the root directory (localhost/xpeed-rajib) 
+    http://localhost/xpeed-rajib/
+    ```
+    or you may clone from https://github.com/therajibhossain/xpeed-rajib.git
+  
+
+  ### 2. Setup Database
+  Use MySQL database for the application. 
+  
+  - Add database credentials to the Config file
+    ```php
+    define("DB_HOST", "localhost");
+    define("DB_USER", "root");
+    define("DB_PASS", "");
+    define("DB_NAME", "xpeedrajib");
+    ```
+  - Create a database called ``xpeedrajib`` and load [``dump.sql``](application/SQL/dump.sql)
+
+
+  ### 3. Login
+  http://localhost/xpeed-rajib/user/login user: rajib & password: 12345678
+
+
+   ### 4. Report Page for Submitted Forms
+   http://localhost/xpeed-rajib/home/
+
+
+  ### 5. Submit New Forms
+  http://localhost/xpeed-rajib/write/new
